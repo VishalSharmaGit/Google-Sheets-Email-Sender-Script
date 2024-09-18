@@ -1,0 +1,25 @@
+function sendEmails() {
+  SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1").activate();
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+
+  var lr = ss.getLastRow();
+
+  var tempelateText = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Tempelate").getRange(1,1).getValue();
+ 
+var emailquota = MailApp.getRemainingDailyQuota() - 96;
+if((lr-1) > emailquota){
+  Browser.msgBox("You have "+ emailquota + " left and you are trying to send "+ (lr-1) + " Emails. Email should not be sent.")
+}
+else{
+  for(var i = 2; i<=lr;i++){
+    var currentemail = ss.getRange(i,1).getValue();
+    var currentclass = ss.getRange(i,3).getValue();
+    var currentname = ss.getRange(i,2).getValue();
+
+    var messagebody = tempelateText.replace("{Name}",currentname).replace("{Class Name}",currentclass);
+    
+    
+  MailApp.sendEmail(currentemail,"Remainder: For Upcoming " + currentclass + " Class",messagebody);
+  }
+}
+}
